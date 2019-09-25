@@ -40,7 +40,71 @@ void COLLADA2GLTF::Writer::finish() {
 }
 
 bool COLLADA2GLTF::Writer::writeGlobalAsset(const COLLADAFW::FileInfo* asset) {
+
 	const COLLADAFW::FileInfo::ValuePairPointerArray& valuePairs = asset->getValuePairArray();
+
+	std::stringstream copyright;
+	std::stringstream authors;
+	std::stringstream tools;
+	std::stringstream comments;
+	std::stringstream sources;
+	std::string created, modified;
+	
+	for (size_t i = 0; i < valuePairs.getCount(); i++) {
+		const COLLADAFW::FileInfo::ValuePair* vp = valuePairs[i];
+		if (vp->first == "copyright") {
+			copyright << vp->second;
+		}else if (vp->first == "author") {
+			authors << vp->second;
+		}
+		else if (vp->first == "authoring_tool") {
+			tools << vp->second;
+		}
+		else if (vp->first == "comments") {
+			comments << vp->second;
+		}
+		else if (vp->first == "source") {
+			sources << vp->second;
+		}
+		else if (vp->first == "created") {
+			created = vp->second;
+		}
+		else if (vp->first == "modified") {
+			modified = vp->second;
+		}
+		else {
+			std::cout << "=== collada untracked value{" << vp->first << ":" << vp->second << "}" << std::endl;
+		}
+	}
+	if (copyright) {
+		std::string rights(copyright.str());
+		std::replace(rights.begin(), rights.end(), '\n', ' ');
+		std::cout << "=== collada copyright notice" << std::endl << rights << std::endl;
+		_options->rights = rights;
+	}
+	if (authors) {
+		std::string contributors(authors.str());
+		std::cout << "=== collada contributors" << std::endl << contributors << std::endl;
+		_options->contributors = contributors;
+	}
+	if (tools) {
+		std::string tool(tools.str());
+		std::cout << "=== collada tools" << std::endl << tool << std::endl;
+		//		_options->contributors = contributors;
+	}
+	if (sources) {
+		std::string source(sources.str());
+		std::cout << "=== collada source" << std::endl << source << std::endl;
+//		_options->sources = ss;
+	}
+	if (comments) {
+		std::string info(comments.str());
+		std::cout << "=== collada info" << std::endl << info << std::endl;
+		//		_options->contributors = contributors;
+	}
+
+
+
 	for (size_t i = 0; i < valuePairs.getCount(); i++) {
 		const COLLADAFW::FileInfo::ValuePair* valuePair = valuePairs[i];
 		const COLLADAFW::String& key = valuePair->first;

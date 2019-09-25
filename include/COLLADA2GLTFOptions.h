@@ -10,6 +10,8 @@ namespace COLLADA2GLTF {
 		std::string inputPath;
 		std::string basePath;
 		std::string outputPath;
+		std::string rights;
+		std::string contributors;
 		bool invertTransparency = false;
 	};
 }
